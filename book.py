@@ -35,6 +35,7 @@ class Book:
 			"image_url": self.Image
 		}
 
+	@staticmethod
 	def getFromUrl(bookUrl: str):
 		bookInstance = Book()
 		finalUrl = "{}/{}".format(baseUrl, bookUrl)
