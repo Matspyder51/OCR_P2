@@ -1,21 +1,18 @@
-from scrapper import getBookData
+from book import Book
 
-try:
-	bookExist, bookUpc, bookPriceNoTax, bookPriceTax, bookName, bookAvailability, bookImage, bookRating, bookDescription, bookCategory, bookUrl = getBookData("catalogue/a-light-in-the-attic_1000/index.html")
+b1 = Book.getFromUrl("catalogue/a-light-in-the-attic_1000/index.html")
 
-	print(
-		"{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}".
-			format(
-			bookName,
-			bookPriceNoTax,
-			bookPriceTax,
-			bookUpc,
-			bookImage,
-			bookRating,
-			bookCategory,
-			bookUrl,
-			bookDescription
+print(
+	"{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}\n{}".
+		format(
+			b1.Name,
+			b1.PriceWithoutTax,
+			b1.Price,
+			b1.Upc,
+			b1.Image,
+			b1.Rating,
+			b1.Category,
+			b1.Url,
+			b1.Description
 		)
-	)
-except TypeError:
-	print('Error')
+)
