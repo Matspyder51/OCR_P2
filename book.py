@@ -18,8 +18,41 @@ class Book:
 	Image: str
 	Rating: str = "Zero"
 
+	soupData: BeautifulSoup
+
 	def __init__(self):
 		pass
+
+	def getBaseInformations(self):
+		self.Name = self.__soupData.find("div", class_="product_main").h1.text
+		self.Description = self.__soupData.find("div", id="product_description").next_sibling.next_sibling.text
+		self.Category = str(self.__soupData.find("ul", class_="breadcrumb").contents[5].text).strip()
+
+	def getAdvancedInformations(self):
+
+		productPage = self.__soupData.find("article", class_="product_page")
+
+		if productPage is None:
+			return
+
+		table = productPage.find("table", class_="table table-striped")
+
+		if table is None:
+			return
+
+		table = table.find_all('tr')
+
+		self.Upc = table[0].td.string
+		self.Price = float(table[3].td.string.replace('£', ''))
+		self.PriceWithoutTax = float(table[2].td.string.replace('£', ''))
+		self.Availability = int(re.search("([0-9]+) ([a-zA-Z]+)", table[5].td.string).group(1))
+
+	def getRating(self):
+		_tempRating = self.__soupData.find("p", class_="star-rating").attrs['class']
+		for cls in _tempRating:
+			if possibleRatings.count(cls) == 1:
+				self.Rating = cls
+				break
 
 	def toDictionary(self):
 		return {
@@ -38,39 +71,18 @@ class Book:
 	@staticmethod
 	def getFromUrl(bookUrl: str):
 		bookInstance = Book()
-		finalUrl = "{}/{}".format(baseUrl, bookUrl)
-		bookInstance.Url = finalUrl
-		request = requests.get(finalUrl)
-		soup = BeautifulSoup(request.content, 'html.parser')
-
-		productPage = soup.find("article", class_="product_page")
-
-		if productPage is None:
+		bookInstance.Url = "{}/{}".format(baseUrl, bookUrl)
+		request = requests.get(bookInstance.Url)
+		if not request.ok:
 			return
 
-		table = productPage.find("table", class_="table table-striped")
+		bookInstance.__soupData = BeautifulSoup(request.content, 'html.parser')
 
-		if table is None:
-			return
+		bookInstance.getBaseInformations()
+		bookInstance.getAdvancedInformations()
+		bookInstance.getRating()
 
-		# print(table.find_all('tr'));
-
-		table = table.find_all('tr')
-
-		bookInstance.Upc = table[0].td.string
-		bookInstance.Price = float(table[3].td.string.replace('£', ''))
-		bookInstance.PriceWithoutTax = float(table[2].td.string.replace('£', ''))
-		bookInstance.Availability = int(re.search("([0-9]+) ([a-zA-Z]+)", table[5].td.string).group(1))
-		bookInstance.Name = soup.find("div", class_="product_main").h1.text
-		bookInstance.Image = baseUrl + soup.find("div", class_="carousel").div.div.div.img.attrs['src'].replace('../..', '')
-
-		_tempRating = soup.find("p", class_="star-rating").attrs['class']
-		for cls in _tempRating:
-			if possibleRatings.count(cls) == 1:
-				bookInstance.Rating = cls
-				break
-		bookInstance.Description = soup.find("div", id="product_description").next_sibling.next_sibling.text
-		bookInstance.Category = str(soup.find("ul", class_="breadcrumb").contents[5].text).strip()
+		bookInstance.Image = baseUrl + bookInstance.__soupData.find("div", class_="carousel").div.div.div.img.attrs['src'].replace('../..', '')
 
 		return bookInstance
 
