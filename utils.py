@@ -28,13 +28,13 @@ def getBooksOfCategory(category_link: str, current_getted_books = []):
 	pager = soup.find("ul", class_="pager")
 	if pager and pager.find("li", class_="next"):
 		next_page = pager.find("li", class_="next").a.attrs["href"]
-		new_link = category_link.replace("/index.html", "").replace("/page-([0-9]+).html", "")
+		new_link = re.sub("/page-([0-9]+).html", "", category_link.replace("/index.html", ""))
 		new_link = "{}/{}".format(new_link, next_page)
-		return getBooksOfCategory(new_link)
+		return getBooksOfCategory(new_link, books)
 
 	return books
 
-# a = getBooksOfCategory("http://books.toscrape.com/catalogue/category/books/science-fiction_16/index.html")
-# print(len(a))
+a = getBooksOfCategory("http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html")
+print(len(a))
 
 # print(getCategories(), len(getCategories()))
