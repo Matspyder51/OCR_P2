@@ -25,7 +25,10 @@ class Book:
 
 	def getBaseInformations(self):
 		self.Name = self.__soupData.find("div", class_="product_main").h1.text
-		self.Description = self.__soupData.find("div", id="product_description").next_sibling.next_sibling.text
+		try:
+			self.Description = self.__soupData.find("div", id="product_description").next_sibling.next_sibling.text
+		except AttributeError:
+			self.Description = "None"
 		self.Category = str(self.__soupData.find("ul", class_="breadcrumb").contents[5].text).strip()
 
 	def getAdvancedInformations(self):
