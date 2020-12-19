@@ -1,13 +1,14 @@
 from book import Book
 from utils import createCSVForCategory, getCategories, getBooksOfCategory
 
-b1 = Book.getFromUrl("catalogue/a-light-in-the-attic_1000/index.html")
+# b1 = Book.getFromUrl("catalogue/alice-in-wonderland-alices-adventures-in-wonderland-1_5/index.html")
 
 # createCSVForCategory('Poetry', [b1])
 
 booksCategories = getCategories()
 
 for category in booksCategories:
+	print("Generating Category: {}".format(category["name"]))
 	books = getBooksOfCategory(category['link'])
 	createCSVForCategory(category['name'], books)
 
