@@ -39,10 +39,10 @@ def getBooksOfCategory(category_link: str, current_getted_books = []):
 	return books
 
 def createCSVForCategory(category_name: str, books: list):
-	currentDir = Path('./data')
+	imageDir = Path('./data/images/{}'.format(category_name))
 
-	if not currentDir.exists():
-		currentDir.mkdir()
+	if not imageDir.exists():
+		imageDir.mkdir(parents=True)
 
 	with open('data/{}.csv'.format(category_name), 'w', encoding='utf-8', newline='') as csvfile:
 		fieldnames = ["product_page_url", "title", "product_description", "category", "universal_product_code", "price_including_tax", "price_excluding_tax", "number_available", "review_rating", "image_url"]
@@ -52,3 +52,8 @@ def createCSVForCategory(category_name: str, books: list):
 
 		for book in books:
 			writer.writerow(book.toDictionary())
+			response = requests.get(book.Image)
+
+			file = open("./data/images/{}/{}-{}.jpg".format(category_name, book.Name.replace(':', '').replace(' ', '_'), book.Upc), "wb")
+			file.write(response.content)
+			file.close()
