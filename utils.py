@@ -19,7 +19,7 @@ def getCategories():
 	return categories
 
 def getBooksOfCategory(category_link: str, current_getted_books = []):
-	books = current_getted_books
+	books = current_getted_books or []
 	request = requests.get("{}/{}".format(baseUrl, category_link))
 	soup = BeautifulSoup(request.content, 'html.parser')
 	pageList = soup.find("section").find("ol", class_="row")
