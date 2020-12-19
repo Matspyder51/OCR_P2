@@ -2,10 +2,14 @@ import requests
 import re
 from bs4 import BeautifulSoup
 from book import Book
+from pathlib import Path
+import csv
+
+baseUrl = "http://books.toscrape.com"
 
 def getCategories():
 	categories = []
-	request = requests.get("http://books.toscrape.com")
+	request = requests.get(baseUrl)
 	soup = BeautifulSoup(request.content, 'html.parser')
 	categoriesHtml = soup.find("div", class_="side_categories").ul.li.ul
 
@@ -16,7 +20,7 @@ def getCategories():
 
 def getBooksOfCategory(category_link: str, current_getted_books = []):
 	books = current_getted_books
-	request = requests.get(category_link)
+	request = requests.get("{}/{}".format(baseUrl, category_link))
 	soup = BeautifulSoup(request.content, 'html.parser')
 	pageList = soup.find("section").find("ol", class_="row")
 
@@ -34,7 +38,19 @@ def getBooksOfCategory(category_link: str, current_getted_books = []):
 
 	return books
 
-a = getBooksOfCategory("http://books.toscrape.com/catalogue/category/books/sequential-art_5/index.html")
-print(len(a))
+def createCSVForCategory(category_name: str, books: list):
+	currentDir = Path('./data')
+
+	if not currentDir.exists():
+		currentDir.mkdir()
+
+	with open('data/{}.csv'.format(category_name), 'w', newline='') as csvfile:
+		fieldnames = ["product_page_url", "title", "product_description", "category", "universal_product_code", "price_including_tax", "price_excluding_tax", "number_available", "review_rating", "image_url"]
+		writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+		writer.writeheader()
+
+		for book in books:
+			writer.writerow(book.toDictionary())
 
 # print(getCategories(), len(getCategories()))
