@@ -44,7 +44,7 @@ def createCSVForCategory(category_name: str, books: list):
 	if not currentDir.exists():
 		currentDir.mkdir()
 
-	with open('data/{}.csv'.format(category_name), 'w', newline='') as csvfile:
+	with open('data/{}.csv'.format(category_name), 'w', encoding='utf-8', newline='') as csvfile:
 		fieldnames = ["product_page_url", "title", "product_description", "category", "universal_product_code", "price_including_tax", "price_excluding_tax", "number_available", "review_rating", "image_url"]
 		writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -52,5 +52,3 @@ def createCSVForCategory(category_name: str, books: list):
 
 		for book in books:
 			writer.writerow(book.toDictionary())
-
-# print(getCategories(), len(getCategories()))
