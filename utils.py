@@ -1,9 +1,10 @@
-import requests
-import re
-from bs4 import BeautifulSoup
 from book import Book
-from pathlib import Path
+from bs4 import BeautifulSoup
 import csv
+from pathlib import Path
+import re
+import requests
+from tqdm import tqdm
 
 baseUrl = "http://books.toscrape.com"
 
@@ -28,7 +29,7 @@ def getBooksOfCategory(category_link: str, current_getted_books=[]):
     soup = BeautifulSoup(request.content, "html.parser")
     pageList = soup.find("section").find("ol", class_="row")
 
-    for book in pageList.find_all("li"):
+    for book in tqdm(pageList.find_all("li")):
         _b_data = book.article.h3.a
         bookInstance = Book.getFromUrl(
             "catalogue/{}".format(_b_data.attrs["href"].replace("../", ""))
