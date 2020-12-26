@@ -25,6 +25,7 @@ class Book:
         pass
 
     def getBaseInformations(self):
+        """Define the name, description and category of this book"""
         self.Name = self.__soupData.find("div", class_="product_main").h1.text
         try:
             self.Description = self.__soupData.find(
@@ -37,7 +38,7 @@ class Book:
         ).strip()
 
     def getAdvancedInformations(self):
-
+        """Define the UPC, Price, PriceWithoutTaxes and availability of this book"""
         productPage = self.__soupData.find("article", class_="product_page")
 
         if productPage is None:
@@ -58,6 +59,7 @@ class Book:
         )
 
     def getRating(self):
+        """Define the rating of this book"""
         _tempRating = self.__soupData.find(
             "p",
             class_="star-rating"
@@ -68,6 +70,7 @@ class Book:
                 break
 
     def toDictionary(self):
+        """Convert all the data into a dictionary"""
         return {
             "product_page_url": self.Url,
             "title": self.Name,
@@ -83,6 +86,7 @@ class Book:
 
     @staticmethod
     def getFromUrl(bookUrl: str):
+        """Create a book from the gived Url"""
         bookInstance = Book()
         bookInstance.Url = "{}/{}".format(baseUrl, bookUrl)
         request = requests.get(bookInstance.Url)

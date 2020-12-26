@@ -10,6 +10,7 @@ baseUrl = "http://books.toscrape.com"
 
 
 def getCategories():
+    """Return all categories scrapped from the website"""
     categories = []
     request = requests.get(baseUrl)
     soup = BeautifulSoup(request.content, "html.parser")
@@ -24,6 +25,14 @@ def getCategories():
 
 
 def getBooksOfCategory(category_link: str, current_getted_books=[]):
+    """For the gived category, return a list containing all the books of this category
+    
+    :param category_link: The link to the category
+    :type category_link: str
+
+    :return: List of books in this category
+    :rtype: list(Book)
+    """
     books = current_getted_books or []
     request = requests.get("{}/{}".format(baseUrl, category_link))
     soup = BeautifulSoup(request.content, "html.parser")
@@ -49,6 +58,7 @@ def getBooksOfCategory(category_link: str, current_getted_books=[]):
 
 
 def createCSVForCategory(category_name: str, books: list):
+    """Create a csv file in data folder for the gived category and download cover image of all books of this category"""
     imageDir = Path("./data/images/{}".format(category_name))
 
     if not imageDir.exists():
