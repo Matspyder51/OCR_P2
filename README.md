@@ -34,7 +34,7 @@ cd ../..
 
 And finally, you can install the required packages for the project :
 
-`pip install requirements.txt`
+`pip install -r requirements.txt`
 
 ## Usage
 
