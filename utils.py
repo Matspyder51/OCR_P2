@@ -86,12 +86,19 @@ def createCSVForCategory(category_name: str, books: list):
             writer.writerow(book.toDictionary())
             response = requests.get(book.Image)
 
+            name = "{}-{}.jpg".format(
+                book.Name.replace(":", "").replace(" ", "_").replace(",", ""),
+                book.Upc,
+            )
+
+            name = re.sub(
+                "[^a-zA-Z0-9\-\_\.]", "", name
+            )
+
+            path = "./data/images/{}/{}".format(category_name, name)
+
             file = open(
-                "./data/images/{}/{}-{}.jpg".format(
-                    category_name,
-                    book.Name.replace(":", "").replace(" ", "_"),
-                    book.Upc,
-                ),
+                path,
                 "wb",
             )
             file.write(response.content)
