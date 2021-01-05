@@ -4,7 +4,6 @@ import csv
 from pathlib import Path
 import re
 import requests
-from tqdm import tqdm
 
 baseUrl = "http://books.toscrape.com"
 
@@ -25,8 +24,9 @@ def getCategories():
 
 
 def getBooksOfCategory(category_link: str, current_getted_books=[]):
-    """For the gived category, return a list containing all the books of this category
-    
+    """For the gived category
+    return a list containing all the books of this category
+
     :param category_link: The link to the category
     :type category_link: str
 
@@ -58,7 +58,8 @@ def getBooksOfCategory(category_link: str, current_getted_books=[]):
 
 
 def createCSVForCategory(category_name: str, books: list):
-    """Create a csv file in data folder for the gived category and download cover image of all books of this category"""
+    """Create a csv file in data folder for the gived category
+    and download cover image of all books of this category"""
     imageDir = Path("./data/images/{}".format(category_name))
 
     if not imageDir.exists():
@@ -91,9 +92,7 @@ def createCSVForCategory(category_name: str, books: list):
                 book.Upc,
             )
 
-            name = re.sub(
-                "[^a-zA-Z0-9\-\_\.]", "", name
-            )
+            name = re.sub(r"[^a-zA-Z0-9\-\_\.]", "", name)
 
             path = "./data/images/{}/{}".format(category_name, name)
 
